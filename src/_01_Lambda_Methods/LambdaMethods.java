@@ -42,12 +42,10 @@ public class LambdaMethods {
 		String vowels = "aeiou";
 		printCustomMessage((s)->{
 			for(int i = 0; i < s.length(); i++) {
-				for(char vowel : vowels.toCharArray()) {
-					if(s.charAt(i) == vowel) {
-						break;
-					}
-					
+				if(vowels.contains(Character.toString(s.charAt(i)))) {
+					continue;
 				}
+				System.out.print(s.charAt(i));
 			}
 		}, "no vowels");
 	}
