@@ -2,6 +2,7 @@ package _05_Minesweeper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import processing.core.PApplet;
 
@@ -63,7 +64,7 @@ public class Minesweeper extends PApplet {
      * *Note* This can be done using a for loop, but try to do it with Streams.
      */
     void revealAllCells() {
-        
+        cells.stream().forEach((i) -> i.revealed = true);
     }
     
     /*
@@ -76,7 +77,7 @@ public class Minesweeper extends PApplet {
      *  noneMatch() // returns true if no items in the stream match the condition
      */
     boolean checkWin() {
-        return false;
+    	return cells.stream().noneMatch((c) -> !c.mine && !c.revealed);
     }
     
     /*
@@ -96,7 +97,12 @@ public class Minesweeper extends PApplet {
      *        - - - -
      */
     void revealCell(Cell cell) {
-        
+        if(cell.mine==false) {
+        	cell.revealed = true;
+        	if(cell.minesAround == 0) {
+        		getNeighbors(cell).stream().filter((c) -> !c.revealed).forEach((c) -> revealCell(c));
+        	}
+        }
     }
     
     /*
@@ -111,7 +117,10 @@ public class Minesweeper extends PApplet {
      * 6. Use reduce() or sum() to count the number of 1s, i.e. mines
      */
     void setNumberOfSurroundingMines() {
-        
+    	Stream<Cell> cellsStream = cells.stream(); 
+        cellsStream.forEach((cell)->{
+        	cell.minesAround = getNeighbors(cell).stream().mapToInt((neighbor) -> neighbor.mine?1:0).sum();
+        });
     }
     
     @Override
